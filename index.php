@@ -9,28 +9,23 @@
 
 <?php
     @ $db = new mysqli('localhost', 'root', '', 'cinema_db');
-
+    // query to read from db
     $query = "select * from movie";
     $result = $db->query($query);
-    // get title from result
     $num_results = $result->num_rows;
 
     $movie_list = [];
     while ($row = $result->fetch_assoc()){
+        // get info from query result
+        $mov_id = $row['movie_id'];
         $title = $row['title'];
         $poster_dir = $row['poster_dir'];
-        $details = $row['details'];
-        $synopsis = $row['synopsis'];
-        $timeslot_index = $row['timeslot_index'];
-        $price = $row['price'];
+
 
         $movie_detail = array(
+            'mov_id' => $mov_id,
             'title' => $title,
-            'poster_dir' => $poster_dir,
-            'details' => $details,
-            'synopsis' => $synopsis,
-            'timeslot_index' => $timeslot_index,
-            'price' => $price
+            'poster_dir' => $poster_dir
         );
 
         $movie_list = array_merge($movie_list, array($movie_detail));
@@ -42,46 +37,77 @@
 
 <div id="wrapper">
 
-    <header>
-        <h1> IE4717 Cinema </h1>
-    </header>
-    <div id="leftcolumn">
-        <nav>
-            <br>
-            <a class="current_page" href="index.php">Home</a>
-            <a href="Menu.php">Menu</a> 
-            <a href="Music.html">Music</a> 
-            <a href="Jobs.html">Jobs</a> 
-            <a href="Menu_admin.php">Price</a>
-            <a href="order_summary.php">Report</a>
-        </nav> 
-        <!-- <br><br><br><br><br><br><br><br> -->
-    </div>
-    <div id="rightcolumn">
-        <div class="content"> 
-            <table>
-                <?php 
-                    for ($i=0, $len=count($movie_list); $i < $len; $i+=1)
-                    {
-                        // echo the movie details in table rows cells
-                        // now this is array of hash
-                        $movie = $movie_list[$i];
-                        $title = $movie['title'];
-                        $poster_dir = $movie['poster_dir'];
-                        $details = $movie['details'];
-                        $synopsis = $movie['synopsis'];
-                        $timeslot = $movie['timeslot_index'];
-                        $price = $movie['price'];
 
-                        echo "<tr>";
-                            echo '<td>' . $title . '</td>';
-                            
-                            
+    <!-- Header Menu of the Page -->
+    <header>
+        
+        <!-- Top header menu containing
+            logo and Navigation bar -->
+        <div>
+            <!-- Logo -->
+                <h2>
+                    4717 Cinema
+                </h2>
+       
+            <!-- Navigation Menu -->
+            <div>
+                <a class="current_page" href="index.php">Home</a>
+                <a href="cart.php">Cart</a> 
+            </div> 
+            
+        </div>   
+    
+        <!-- Image menu in Header to contain an Image and
+            a sample text over that image -->
+
+    </header>
+
+    <div class="content"> 
+        <table>
+            <?php 
+                echo "<br><br>
+                        <table>
+                        <tr>
+                    ";
+                $i = 0;
+                $lst_len=count($movie_list);
+                while ($i < $lst_len)
+                {
+                    // echo the movie details in table rows cells
+                    // now this is array of hash
+                    $movie = $movie_list[$i];
+                    $mov_id = $movie['mov_id'];
+                    $title = $movie['title'];
+                    $poster_dir = $movie['poster_dir'];
+                    
+                    echo '
+                        
+                            <td> 
+                                <a href="mov_detail.php?mov_id=' . $mov_id . '">
+                                    <img 
+                                        src="' . $poster_dir . '"
+                                        alt="'.$title.'"
+                                        width="170"
+                                        height="auto" 
+                                    >
+                                </a>
+                                <br>
+                                <strong> ' . $title . ' </strong>
+                            </td>
+                        ';
+                    
+                    if ($i % 3 == 2 || $i == $lst_len - 1)
+                    {
                         echo "</tr>";
                     }
-                ?>
-                
-            </table>
+                    
+                    $i++;
+                }
+
+                echo "</table>";
+            ?>
+            
+        </table>
     </div>
 
     <footer> 
@@ -90,7 +116,7 @@
         <a href="yinjie@zhao.com"><em>yinjie@zhao.com</em></a>
     </footer> 
 
-</div>
+
 
 
 
